@@ -23,58 +23,53 @@ namespace
         {
           if (auto *op = dyn_cast<BinaryOperator>(&I))
           {
-            // Insert at the point where the instruction `op` appears.
+            errs() << "Old Instruction: " << I << "\n";
             IRBuilder<> builder(op);
 
-            // Make a multiply with the same operands as `op`.
             Value *lhs = op->getOperand(0);
             Value *rhs = op->getOperand(1);
-            Value *res = nullptr;
+            Instruction *res = nullptr;
             switch (op->getOpcode())
             {
             case 13:
-              res = builder.CreateSub(lhs, rhs);
+              res = BinaryOperator::CreateSub(lhs, rhs);
               break;
             case 14:
-              res = builder.CreateFSub(lhs, rhs);
+              res = BinaryOperator::CreateFSub(lhs, rhs);
               break;
             case 15:
-              res = builder.CreateAdd(lhs, rhs);
+              res = BinaryOperator::CreateAdd(lhs, rhs);
               break;
             case 16:
-              res = builder.CreateFAdd(lhs, rhs);
+              res = BinaryOperator::CreateFAdd(lhs, rhs);
               break;
             case 17:
-              res = builder.CreateUDiv(lhs, rhs);
+              res = BinaryOperator::CreateUDiv(lhs, rhs);
               break;
             case 18:
-              res = builder.CreateFDiv(lhs, rhs);
+              res = BinaryOperator::CreateFDiv(lhs, rhs);
               break;
             case 19:
-              res = builder.CreateMul(lhs, rhs);
+              res = BinaryOperator::CreateMul(lhs, rhs);
               break;
             case 20:
-              res = builder.CreateMul(lhs, rhs);
+              res = BinaryOperator::CreateMul(lhs, rhs);
               break;
             case 21:
-              res = builder.CreateFMul(lhs, rhs);
+              res = BinaryOperator::CreateFMul(lhs, rhs);
               break;
             case 28:
-              res = builder.CreateOr(lhs, rhs);
+              res = BinaryOperator::CreateOr(lhs, rhs);
               break;
             case 29:
-              res = builder.CreateAnd(lhs, rhs);
+              res = BinaryOperator::CreateAnd(lhs, rhs);
               break;
             default:
-              res = op;
+              res = &I;
             }
-            errs() << "Old Instruction: " << op << "\n";
-            for (auto &U : op->uses())
-            {
-              User *user = U.getUser();
-              user->setOperand(U.getOperandNo(), res);
-            }
-            errs() << "Changed Instruction: " << op << "\n";
+            res->setHasNoSignedWrap(I.hasNoSignedWrap());
+            B.getInstList().insert(op->getIterator(), res);
+            errs() << "New Instruction: " << *res << "\n";
             return true;
           }
         }
