@@ -17,6 +17,7 @@ namespace
 
     virtual bool runOnFunction(Function &F)
     {
+      bool modified = false;
       for (auto &B : F)
       {
         for (auto &I : B)
@@ -70,12 +71,12 @@ namespace
             res->setHasNoSignedWrap(I.hasNoSignedWrap());
             B.getInstList().insert(op->getIterator(), res);
             errs() << "New Instruction: " << *res << "\n";
-            return true;
+            modified = true;
           }
         }
       }
 
-      return false;
+      return modified;
     }
   };
 } // namespace

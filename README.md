@@ -1,7 +1,6 @@
-# llvm-pass-skeleton
+# 6120-llvm
 
-A completely useless LLVM pass.
-It's for LLVM 3.8.
+flip some binary operators!
 
 Build:
 
@@ -14,4 +13,4 @@ Build:
 
 Run:
 
-    $ clang -Xclang -load -Xclang build/skeleton/libSkeletonPass.* something.c
+    $ clang -Xclang -load -Xclang build/skeleton/libSkeletonPass.* [knapsack | longestincsubseq].c
